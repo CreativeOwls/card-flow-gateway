@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Download, LogOut, Menu, Moon, ScanLine, Search, Sun } from "lucide-react";
+import { Download, LogOut, Menu, Moon, ScanLine, Search, Sun, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { copyText } from "@/lib/cardflow/clipboard";
 import { downloadCsv } from "@/lib/cardflow/csv";
-import { createLead, listLeads, updateLead } from "@/lib/cardflow/leads.functions";
+import { createLead, deleteLead, listLeads, updateLead } from "@/lib/cardflow/leads.functions";
 import { LEAD_STATUSES, type ExtractedCard, type Lead } from "@/lib/cardflow/types";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -133,6 +133,25 @@ function Dashboard() {
       toast.error(error instanceof Error ? error.message : "Could not save that lead.");
     },
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteLead({ data: { id } }),
+    onMutate: (id) => {
+      const previous = queryClient.getQueryData<Lead[]>(["leads"]) ?? [];
+      setCache(previous.filter((lead) => lead.id !== id));
+      if (selectedId === id) setSelectedId(null);
+      return { previous };
+    },
+    onError: (error, _id, context) => {
+      if (context?.previous) setCache(context.previous);
+      toast.error(error instanceof Error ? error.message : "Could not delete that lead.");
+    },
+    onSuccess: () => {
+      toast.success("Lead deleted.");
+    },
+  });
+
+  const handleDelete = (id: string) => deleteMutation.mutate(id);
 
   const filtered = useMemo(() => {
     const needle = search.trim().toLowerCase();
