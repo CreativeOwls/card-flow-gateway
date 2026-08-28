@@ -1,44 +1,13 @@
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated")({
-  component: AuthenticatedLayout,
+  ssr: false,
+  beforeLoad: async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) throw redirect({ to: "/" });
+    return { user: data.user };
+  },
+  component: () => <Outlet />,
 });
-
-function AuthenticatedLayout() {
-  const navigate = useNavigate();
-  const [state, setState] = useState<"checking" | "authed">("checking");
-
-  useEffect(() => {
-    let active = true;
-
-    supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
-      if (data.session) setState("authed");
-      else void navigate({ to: "/", replace: true });
-    });
-
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!active) return;
-      if (session) setState("authed");
-      else void navigate({ to: "/", replace: true });
-    });
-
-    return () => {
-      active = false;
-      subscription.subscription.unsubscribe();
-    };
-  }, [navigate]);
-
-  if (state !== "authed") {
-    return (
-      <div className="app-shell flex min-h-screen items-center justify-center">
-        <p className="text-sm text-muted-foreground">Checking your session…</p>
-      </div>
-    );
-  }
-
-  return <Outlet />;
-}
