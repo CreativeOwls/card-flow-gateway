@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Download, LogOut, Moon, ScanLine, Search, Sun } from "lucide-react";
+import { Download, LogOut, Menu, Moon, ScanLine, Search, Sun } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,13 @@ import { ScanDialog } from "@/components/cardflow/ScanDialog";
 import { StatusBadge } from "@/components/cardflow/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -86,6 +93,7 @@ function Dashboard() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [scanOpen, setScanOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const leadsQuery = useQuery({
     queryKey: ["leads"],
