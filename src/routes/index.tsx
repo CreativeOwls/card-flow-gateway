@@ -6,14 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 import { ConstellationBackdrop } from "@/components/ConstellationBackdrop";
-import { GoogleIcon } from "@/components/GoogleIcon";
 import { Wordmark } from "@/components/Wordmark";
 import { Button } from "@/components/ui/button";
-import { lovable } from "@/integrations/lovable/index";
 
 const TITLE = "Card Flow";
 const DESCRIPTION =
-  "Card Flow — a DevFest hackathon scaffold. Sign in with Google to get started.";
+  "Card Flow — a DevFest hackathon scaffold. Enter to explore the lead pipeline demo.";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
