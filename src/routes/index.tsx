@@ -6,14 +6,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 import { ConstellationBackdrop } from "@/components/ConstellationBackdrop";
-import { GoogleIcon } from "@/components/GoogleIcon";
 import { Wordmark } from "@/components/Wordmark";
 import { Button } from "@/components/ui/button";
-import { lovable } from "@/integrations/lovable/index";
 
 const TITLE = "Card Flow";
 const DESCRIPTION =
-  "Card Flow — a DevFest hackathon scaffold. Sign in with Google to get started.";
+  "Card Flow — a DevFest hackathon scaffold. Enter to explore the lead pipeline demo.";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,52 +29,45 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [signingIn, setSigningIn] = useState(false);
+  const [entering, setEntering] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     let active = true;
 
-    const goToDashboard = () => {
-      if (active) void navigate({ to: "/dashboard", replace: true });
-    };
-
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) goToDashboard();
+      if (active) setHasSession(Boolean(data.session));
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) goToDashboard();
+      if (active) setHasSession(Boolean(session));
     });
 
     return () => {
       active = false;
       sub.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
-  const handleGoogleSignIn = async () => {
-    setSigningIn(true);
+  const handleEnter = async () => {
+    setEntering(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
-
-      if (result.error) {
-        toast.error("Could not sign in with Google. Please try again.");
-        setSigningIn(false);
-        return;
+      if (!hasSession) {
+        const { error } = await supabase.auth.signInAnonymously();
+        if (error) {
+          toast.error("Could not start the demo. Please try again.");
+          setEntering(false);
+          return;
+        }
       }
-
-      if (result.redirected) return;
-
-      toast.success("You're signed in.");
       void navigate({ to: "/dashboard", replace: true });
     } catch {
-      toast.error("Something went wrong signing in. Please try again.");
-      setSigningIn(false);
+      toast.error("Something went wrong. Please try again.");
+      setEntering(false);
     }
   };
+
 
 
   return (
@@ -94,15 +86,15 @@ function Index() {
         <Button
           variant="google"
           size="pill"
-          onClick={handleGoogleSignIn}
-          disabled={signingIn}
-          aria-label="Sign in with Google"
+          onClick={handleEnter}
+          disabled={entering}
+          aria-label="Enter the CardFlow demo"
           className="w-full max-w-xs sm:w-auto"
         >
-          <GoogleIcon className="size-5" />
-          {signingIn ? "Signing in…" : "Sign in with Google"}
+          {entering ? "Entering…" : "Enter"}
         </Button>
       </div>
     </main>
+
   );
 }
