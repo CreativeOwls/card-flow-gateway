@@ -10,7 +10,7 @@ export const sendGmail = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) =>
     z
       .object({
-        to: z.string().email(),
+        to: z.string().trim().email(),
         subject: z.string().max(400),
         body: z.string().max(20000),
       })

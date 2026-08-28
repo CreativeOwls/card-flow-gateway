@@ -89,21 +89,27 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch, onDelete }: Lead
   };
 
   const handleSend = async () => {
-    if (!lead.email) {
+    const recipient = (lead.email ?? "").trim();
+    if (!recipient) {
       toast.error("This lead has no email address yet.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(recipient)) {
+      toast.error(`"${recipient}" doesn't look like a valid email address. Edit it above and try again.`);
       return;
     }
     setSending(true);
     try {
-      await sendGmail({ data: { to: lead.email, subject, body } });
+      await sendGmail({ data: { to: recipient, subject, body } });
       markFollowedUp();
-      toast.success(`Follow-up sent to ${lead.email}.`);
+      toast.success(`Follow-up sent to ${recipient}.`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not send that email.");
     } finally {
       setSending(false);
     }
   };
+
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
