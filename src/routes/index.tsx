@@ -30,18 +30,30 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [entering, setEntering] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Warm the demo session so pressing Enter is instant.
-    void supabase.auth.getSession();
+    let active = true;
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setHasSession(Boolean(data.session));
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setHasSession(Boolean(session));
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const handleEnter = async () => {
     setEntering(true);
     try {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
+      if (!hasSession) {
         const { error } = await supabase.auth.signInAnonymously();
         if (error) {
           toast.error("Could not start the demo. Please try again.");
@@ -55,6 +67,7 @@ function Index() {
       setEntering(false);
     }
   };
+
 
 
   return (
