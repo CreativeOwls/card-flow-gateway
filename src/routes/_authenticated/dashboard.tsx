@@ -26,7 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const TITLE = "Lead pipeline — CardFlow";
 const DESCRIPTION =
-  "Scan conference business cards, enrich them automatically, and send follow-up emails from one CardFlow pipeline.";
+  "Scan DevFest 2026 business cards, enrich them automatically, and send follow-up emails from one CardFlow pipeline.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({

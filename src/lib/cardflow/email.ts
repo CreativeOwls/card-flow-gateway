@@ -28,7 +28,7 @@ export function generateFollowUpEmail(card: CardLike, tone: EmailTone): string {
     return [
       `Dear ${name},`,
       "",
-      `It was a pleasure meeting you at the conference and hearing your perspective as ${title} at ${company}.`,
+      `It was a pleasure meeting you at DevFest 2026 and hearing your perspective as ${title} at ${company}.`,
       `Given that ${focus}, I believe there is a strong strategic fit between our teams.`,
       `Would you be open to a 30-minute call in the coming weeks to explore it properly?`,
     ].join("\n");
@@ -38,7 +38,7 @@ export function generateFollowUpEmail(card: CardLike, tone: EmailTone): string {
     return [
       `Hi ${name},`,
       "",
-      `Great to meet you at the conference — we help companies like ${company} move faster on exactly the problem you described, where ${focus}.`,
+      `Great to meet you at DevFest 2026 — we help companies like ${company} move faster on exactly the problem you described, where ${focus}.`,
       `Most teams we work with see measurable results within a quarter.`,
       `Can I grab a 15-minute demo slot with you this week?`,
     ].join("\n");
@@ -47,14 +47,14 @@ export function generateFollowUpEmail(card: CardLike, tone: EmailTone): string {
   return [
     `Hi ${name},`,
     "",
-    `Really enjoyed our chat at the conference today.`,
+    `Really enjoyed our chat at DevFest 2026 today.`,
     `It stuck with me that ${focus} — that's a space I'd love to dig into with you.`,
     `Any chance you have 20 minutes next week for a quick call?`,
   ].join("\n");
 }
 
 export function emailSubject(card: Pick<ExtractedCard, "fullName">): string {
-  return `Great meeting you at the conference, ${firstNameOf(card)}`;
+  return `Great meeting you at DevFest 2026, ${firstNameOf(card)}`;
 }
 
 export function gmailComposeUrl(to: string, subject: string, body: string): string {
