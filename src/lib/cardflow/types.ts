@@ -23,6 +23,6 @@ export interface Lead extends ExtractedCard {
   id: string;
   status: LeadStatus;
   /** Data URL or remote URL of the original business card photo. */
-  cardImageUrl?: string;
+  cardImageUrl?: string | undefined;
   capturedAt: string;
 }

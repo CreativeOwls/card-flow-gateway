@@ -89,7 +89,7 @@ export function ScanDialog({
     }
 
     resetState();
-    if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+    if (typeof navigator !== "undefined" && !!navigator.mediaDevices) {
       void startCamera();
     } else {
       setCameraError("This device has no camera available. Upload a photo instead.");
@@ -167,7 +167,7 @@ export function ScanDialog({
 
   const retry = useCallback(() => {
     resetState();
-    if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+    if (typeof navigator !== "undefined" && !!navigator.mediaDevices) {
       void startCamera();
     }
   }, [resetState, startCamera]);

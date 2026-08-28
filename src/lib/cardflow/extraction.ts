@@ -16,8 +16,8 @@ export const SCAN_STEPS = [
 export type ScanStep = (typeof SCAN_STEPS)[number];
 
 export interface ExtractOptions {
-  onStep?: (step: ScanStep) => void;
-  excludeEmails?: string[];
+  onStep?: ((step: ScanStep) => void) | undefined;
+  excludeEmails?: string[] | undefined;
 }
 
 function emptyCard(): ExtractedCard {
