@@ -1,8 +1,19 @@
-import { Copy, Download, ExternalLink, Mail, Send } from "lucide-react";
+import { Copy, Download, ExternalLink, Mail, Send, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { StatusBadge } from "@/components/cardflow/StatusBadge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +37,7 @@ interface LeadDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPatch: (id: string, patch: Partial<Lead>) => void;
+  onDelete: (id: string) => void;
 }
 
 const FIELDS: Array<{ key: keyof Lead; label: string; type?: string }> = [
@@ -48,7 +60,7 @@ function initialsOf(name: string): string {
     .join("");
 }
 
-export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProps) {
+export function LeadDrawer({ lead, open, onOpenChange, onPatch, onDelete }: LeadDrawerProps) {
   const [tone, setTone] = useState<EmailTone>("Casual");
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
@@ -241,6 +253,32 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
                 Add an email address to enable sending.
               </p>
             ) : null}
+          </section>
+
+          <section className="border-t border-border pt-5">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full gap-2">
+                  <Trash2 className="size-4" aria-hidden="true" />
+                  Delete lead
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="app-shell">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this lead?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {lead.fullName || "This lead"} will be permanently removed from your pipeline.
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete(lead.id)}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </section>
         </div>
       </SheetContent>
