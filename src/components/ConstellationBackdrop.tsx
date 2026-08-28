@@ -86,9 +86,10 @@ export function ConstellationBackdrop() {
       }
 
       for (let i = 0; i < dots.length; i++) {
-        const a = dots[i];
+        const a = dots[i]!;
         for (let j = i + 1; j < dots.length; j++) {
-          const b = dots[j];
+          const b = dots[j]!;
+
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.hypot(dx, dy);

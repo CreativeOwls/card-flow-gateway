@@ -20,7 +20,7 @@ export function Wordmark({ word }: { word: string }) {
     <h1 className="wordmark" aria-label={word}>
       {chars.map((char, index) => {
         const isLast = index === lastIndex;
-        const accent = isLast ? ACCENTS[cycle] : ACCENTS[index % ACCENTS.length];
+        const accent = isLast ? ACCENTS[cycle]! : ACCENTS[index % ACCENTS.length]!;
         return (
           <span
             key={`${char}-${index}`}
