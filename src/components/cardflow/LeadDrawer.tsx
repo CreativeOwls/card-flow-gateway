@@ -95,7 +95,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="app-shell w-full overflow-y-auto sm:max-w-xl">
+      <SheetContent className="app-shell w-full max-w-full overflow-y-auto sm:max-w-xl">
         <SheetHeader className="space-y-3">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
@@ -117,14 +117,15 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
           />
         </SheetHeader>
 
-        <div className="space-y-6 px-4 pb-8">
+        <div className="space-y-5 px-4 pb-10 sm:space-y-6">
           <section className="space-y-2">
             <h3 className="text-sm font-medium">Card photo</h3>
             {lead.cardImageUrl ? (
               <img
                 src={lead.cardImageUrl}
                 alt={`Business card for ${lead.fullName || "this lead"}`}
-                className="w-full rounded-lg border border-border"
+                loading="lazy"
+                className="aspect-[16/10] w-full rounded-lg border border-border object-cover"
               />
             ) : (
               <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
@@ -191,14 +192,14 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
               />
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleSend} disabled={sending} className="gap-2">
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Button onClick={handleSend} disabled={sending} className="w-full gap-2">
                 <Send className="size-4" aria-hidden="true" />
                 {sending ? "Sending…" : "Send with Gmail"}
               </Button>
               <Button
                 variant="secondary"
-                className="gap-2"
+                className="w-full gap-2"
                 onClick={() => {
                   window.open(gmailComposeUrl(lead.email, subject, body), "_blank", "noopener");
                   markFollowedUp();
@@ -209,7 +210,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
               </Button>
               <Button
                 variant="outline"
-                className="gap-2"
+                className="w-full gap-2"
                 onClick={async () => {
                   const ok = await copyText(`${subject}\n\n${body}`);
                   if (ok) toast.success("Email copied to clipboard.");
@@ -221,7 +222,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onPatch }: LeadDrawerProp
               </Button>
               <Button
                 variant="outline"
-                className="gap-2"
+                className="w-full gap-2"
                 onClick={() =>
                   downloadCsv(
                     [lead],

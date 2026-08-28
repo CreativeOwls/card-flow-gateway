@@ -174,7 +174,7 @@ export function ScanDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="app-shell sm:max-w-lg">
+      <DialogContent className="app-shell max-h-[90dvh] w-[calc(100vw-2rem)] max-w-lg overflow-y-auto sm:w-full">
         <DialogHeader>
           <DialogTitle>Scan business card</DialogTitle>
           <DialogDescription>
@@ -189,7 +189,7 @@ export function ScanDialog({
               <img
                 src={capturedImage}
                 alt="Captured business card"
-                className={cn("w-full", busy && "opacity-60")}
+                className={cn("aspect-[16/10] w-full object-cover", busy && "opacity-60")}
               />
               {busy ? (
                 <div
@@ -233,7 +233,7 @@ export function ScanDialog({
                   <X className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
                   <span>{error}</span>
                 </p>
-                <Button size="sm" variant="secondary" onClick={retry}>
+                <Button size="sm" variant="secondary" className="w-full sm:w-auto" onClick={retry}>
                   Try again
                 </Button>
               </div>
@@ -255,7 +255,7 @@ export function ScanDialog({
                 }}
                 onClick={() => fileInputRef.current?.click()}
                 className={cn(
-                  "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-8 text-center text-sm text-muted-foreground transition-colors",
+                  "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-6 sm:p-8 text-center text-sm text-muted-foreground transition-colors",
                   dragging && "border-primary bg-primary/5",
                 )}
               >
@@ -281,16 +281,16 @@ export function ScanDialog({
 
             {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-            <div className="flex flex-wrap gap-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               {!cameraError ? (
-                <Button onClick={handleCapture} className="gap-2">
+                <Button onClick={handleCapture} className="w-full gap-2">
                   <Camera className="size-4" aria-hidden="true" />
                   Capture card
                 </Button>
               ) : null}
               <Button
                 variant="secondary"
-                className="gap-2"
+                className="w-full gap-2"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Upload className="size-4" aria-hidden="true" />

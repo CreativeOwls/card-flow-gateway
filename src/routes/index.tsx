@@ -88,7 +88,7 @@ function Index() {
       />
       <div aria-hidden="true" className="vignette pointer-events-none absolute inset-0" />
 
-      <div className="relative flex w-full flex-col items-center gap-10 px-4">
+      <div className="relative flex w-full flex-col items-center gap-8 px-4 sm:gap-10 sm:px-6">
         <Wordmark word="CARD FLOW" />
 
         <Button
@@ -97,6 +97,7 @@ function Index() {
           onClick={handleGoogleSignIn}
           disabled={signingIn}
           aria-label="Sign in with Google"
+          className="w-full max-w-xs sm:w-auto"
         >
           <GoogleIcon className="size-5" />
           {signingIn ? "Signing in…" : "Sign in with Google"}
