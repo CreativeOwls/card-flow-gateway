@@ -25,7 +25,7 @@ export const leadFields = z.object({
 
 export type LeadFieldsInput = z.input<typeof leadFields>;
 
-function dropOversizedImage<T extends { cardImageUrl?: string }>(payload: T): T {
+function dropOversizedImage<T extends { cardImageUrl?: string | undefined }>(payload: T): T {
   if (payload.cardImageUrl && payload.cardImageUrl.length > MAX_CARD_IMAGE_CHARS) {
     return { ...payload, cardImageUrl: "" };
   }
