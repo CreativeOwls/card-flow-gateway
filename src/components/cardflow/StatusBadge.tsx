@@ -29,7 +29,7 @@ export function StatusBadge({ status, onChange, className }: StatusBadgeProps) {
           type="button"
           onClick={(event) => event.stopPropagation()}
           className={cn(
-            "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "inline-flex min-h-9 items-center gap-1 rounded-full px-3 py-1.5 text-xs sm:min-h-0 sm:py-1 font-medium transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             STATUS_CLASSES[status],
             className,
           )}

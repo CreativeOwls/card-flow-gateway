@@ -20,11 +20,11 @@ const buttonVariants = cva(
           "bg-surface-invert text-surface-invert-foreground shadow-lg transition-transform duration-200 hover:scale-105 hover:bg-surface-invert focus-visible:ring-surface-invert",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        pill: "h-12 rounded-full px-7 text-base [&_svg]:size-5",
-        icon: "h-9 w-9",
+        default: "min-h-11 px-4 py-2 sm:min-h-9 sm:h-9",
+        sm: "min-h-11 rounded-md px-3 text-xs sm:min-h-8 sm:h-8",
+        lg: "min-h-11 rounded-md px-8 sm:h-10",
+        pill: "min-h-12 h-12 rounded-full px-7 text-base [&_svg]:size-5",
+        icon: "size-11 sm:size-9",
       },
 
     },

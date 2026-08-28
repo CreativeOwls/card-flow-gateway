@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Download, LogOut, Moon, ScanLine, Search, Sun } from "lucide-react";
+import { Download, LogOut, Menu, Moon, ScanLine, Search, Sun } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,13 @@ import { ScanDialog } from "@/components/cardflow/ScanDialog";
 import { StatusBadge } from "@/components/cardflow/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -86,6 +93,7 @@ function Dashboard() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
   const [scanOpen, setScanOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const leadsQuery = useQuery({
     queryKey: ["leads"],
@@ -159,60 +167,123 @@ function Dashboard() {
   };
 
   return (
-    <div className="app-shell min-h-screen">
+    <div className="app-shell min-h-screen overflow-x-hidden">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
               CF
             </span>
-            <span className="text-base font-semibold tracking-tight">CardFlow</span>
+            <span className="truncate text-base font-semibold tracking-tight">CardFlow</span>
           </div>
 
-          <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+          <span className="hidden rounded-full border border-border px-3 py-1 text-xs text-muted-foreground lg:inline">
             Total Leads: {leads.length} | Follow-ups Ready: {followUpsReady}
           </span>
 
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggle}
-              aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-            >
-              {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-            </Button>
-            <Button
-              variant="outline"
               size="sm"
               className="gap-2"
-              onClick={() => downloadCsv(filtered)}
+              onClick={() => setScanOpen(true)}
+              aria-label="Scan business card"
             >
-              <Download className="size-4" aria-hidden="true" />
-              Export
-            </Button>
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleSignOut}>
-              <LogOut className="size-4" aria-hidden="true" />
-              Sign out
-            </Button>
-            <Button size="sm" className="gap-2" onClick={() => setScanOpen(true)}>
               <ScanLine className="size-4" aria-hidden="true" />
-              Scan Business Card
+              <span className="hidden sm:inline">Scan Business Card</span>
+              <span className="sm:hidden">Scan</span>
             </Button>
+
+            {/* Desktop actions */}
+            <div className="hidden items-center gap-2 md:flex">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggle}
+                aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+              >
+                {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => downloadCsv(filtered)}
+              >
+                <Download className="size-4" aria-hidden="true" />
+                Export
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleSignOut}>
+                <LogOut className="size-4" aria-hidden="true" />
+                Sign out
+              </Button>
+            </div>
+
+            {/* Mobile menu */}
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="md:hidden" aria-label="Open menu">
+                  <Menu className="size-5" aria-hidden="true" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="app-shell w-[85vw] max-w-sm">
+                <SheetHeader>
+                  <SheetTitle className="text-left">Menu</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-3 px-4 pb-8">
+                  <p className="rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground">
+                    Total Leads: {leads.length}
+                    <br />
+                    Follow-ups Ready: {followUpsReady}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      toggle();
+                    }}
+                  >
+                    {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                    {dark ? "Light theme" : "Dark theme"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      downloadCsv(filtered);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <Download className="size-4" aria-hidden="true" />
+                    Export CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      void handleSignOut();
+                    }}
+                  >
+                    <LogOut className="size-4" aria-hidden="true" />
+                    Sign out
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+      <main className="mx-auto max-w-6xl space-y-5 px-4 py-6 sm:space-y-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Lead pipeline</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Lead pipeline</h1>
+          <p className="max-w-prose text-sm leading-relaxed text-muted-foreground md:text-base">
             Every card you scan lands here, enriched and ready for a follow-up email.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="relative w-full max-w-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <div className="relative w-full sm:max-w-xs">
             <Search
               className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
               aria-hidden="true"
@@ -226,22 +297,83 @@ function Dashboard() {
             />
           </div>
 
-          <Tabs
-            value={statusFilter}
-            onValueChange={(value) => setStatusFilter(value as StatusFilter)}
-          >
-            <TabsList>
-              <TabsTrigger value="All">All</TabsTrigger>
-              {LEAD_STATUSES.map((status) => (
-                <TabsTrigger key={status} value={status}>
-                  {status}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <Tabs
+              value={statusFilter}
+              onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+            >
+              <TabsList>
+                <TabsTrigger value="All">All</TabsTrigger>
+                {LEAD_STATUSES.map((status) => (
+                  <TabsTrigger key={status} value={status}>
+                    {status}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
+        {/* Mobile: stacked cards */}
+        <div className="space-y-3 md:hidden">
+          {leadsQuery.isLoading ? (
+            <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+              Loading your pipeline…
+            </p>
+          ) : filtered.length === 0 ? (
+            <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+              No leads match those filters yet. Scan a card to get started.
+            </p>
+          ) : (
+            filtered.map((lead) => (
+              <article
+                key={lead.id}
+                className="space-y-3 rounded-xl border border-border bg-card p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                    {initialsOf(lead.fullName)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">{lead.fullName || "Unnamed lead"}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {[lead.jobTitle, lead.company].filter(Boolean).join(" · ") || "—"}
+                    </p>
+                  </div>
+                </div>
+
+                {lead.email || lead.phone ? (
+                  <div className="space-y-1 text-sm">
+                    {lead.email ? (
+                      <p className="truncate text-muted-foreground">{lead.email}</p>
+                    ) : null}
+                    {lead.phone ? (
+                      <p className="truncate text-muted-foreground">{lead.phone}</p>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                <div className="flex flex-col gap-3">
+                  <StatusBadge
+                    status={lead.status}
+                    onChange={(status) => handlePatch(lead.id, { status })}
+                    className="w-fit"
+                  />
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => setSelectedId(lead.id)}
+                  >
+                    View &amp; Send Follow-up
+                  </Button>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        {/* Desktop: table */}
+        <div className="hidden overflow-hidden rounded-xl border border-border bg-card md:block">
           <Table>
             <TableHeader>
               <TableRow>
