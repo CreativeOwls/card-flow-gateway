@@ -373,11 +373,21 @@ function Dashboard() {
                 ) : null}
 
                 <div className="flex flex-col gap-3">
-                  <StatusBadge
-                    status={lead.status}
-                    onChange={(status) => handlePatch(lead.id, { status })}
-                    className="w-fit"
-                  />
+                  <div className="flex items-center justify-between gap-2">
+                    <StatusBadge
+                      status={lead.status}
+                      onChange={(status) => handlePatch(lead.id, { status })}
+                      className="w-fit"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Delete ${lead.fullName || "lead"}`}
+                      onClick={() => handleDelete(lead.id)}
+                    >
+                      <Trash2 className="size-4 text-destructive" aria-hidden="true" />
+                    </Button>
+                  </div>
                   <Button
                     variant="secondary"
                     className="w-full"
@@ -473,16 +483,29 @@ function Dashboard() {
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setSelectedId(lead.id);
-                        }}
-                      >
-                        View &amp; Send Follow-up
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setSelectedId(lead.id);
+                          }}
+                        >
+                          View &amp; Send Follow-up
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Delete ${lead.fullName || "lead"}`}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleDelete(lead.id);
+                          }}
+                        >
+                          <Trash2 className="size-4 text-destructive" aria-hidden="true" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -506,6 +529,7 @@ function Dashboard() {
           if (!open) setSelectedId(null);
         }}
         onPatch={handlePatch}
+        onDelete={handleDelete}
       />
     </div>
   );
