@@ -67,7 +67,17 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme inline {
+  --color-status-new: var(--status-new);
+  --color-status-new-foreground: var(--status-new-foreground);
+  --color-status-followup: var(--status-followup);
+  --color-status-followup-foreground: var(--status-followup-foreground);
+  --color-status-demo: var(--status-demo);
+  --color-status-demo-foreground: var(--status-demo-foreground);
+}
+
 :root {
+
   --radius: 0.625rem;
 
   /* Near-black, very slightly blue-tinted canvas. */
