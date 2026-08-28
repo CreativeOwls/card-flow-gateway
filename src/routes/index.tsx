@@ -1,6 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+import { supabase } from "@/integrations/supabase/client";
+
 
 import { ConstellationBackdrop } from "@/components/ConstellationBackdrop";
 import { GoogleIcon } from "@/components/GoogleIcon";
@@ -28,6 +31,28 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [signingIn, setSigningIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let active = true;
+
+    const goToDashboard = () => {
+      if (active) void navigate({ to: "/dashboard", replace: true });
+    };
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) goToDashboard();
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) goToDashboard();
+    });
+
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleGoogleSignIn = async () => {
     setSigningIn(true);
@@ -45,12 +70,13 @@ function Index() {
       if (result.redirected) return;
 
       toast.success("You're signed in.");
-      setSigningIn(false);
+      void navigate({ to: "/dashboard", replace: true });
     } catch {
       toast.error("Something went wrong signing in. Please try again.");
       setSigningIn(false);
     }
   };
+
 
   return (
     <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-background">
